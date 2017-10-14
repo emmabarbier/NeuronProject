@@ -9,8 +9,8 @@ using namespace std;
 //======================================================================
 
 //default constructor
-Neuron::Neuron(double time)
-	: V_(10), nb_spikes_(0), time_(time), threshold_(20), isRefractory_(0), tau_(20), tauRef_(2), h_(0.1), R_(20), J_(0.2) {}
+Neuron::Neuron(int time, double I)
+	: V_(10), nb_spikes_(0), time_(time), threshold_(20), isRefractory_(0), tau_(20), tauRef_(2), h_(0.1), R_(20), J_(0.2), I_(I), spike_(false) {}
 
 
 //======================================================================
@@ -21,7 +21,9 @@ double Neuron::getV() const { return V_; }
 
 double Neuron::getNb_spikes() const { return nb_spikes_; }
 
-double Neuron::getTime_() const { return time_; } 
+double Neuron::getTime_() const { return time_*0.1; } 
+
+bool Neuron::getStateSpike_() const { return spike_;}
 
 //double Neuron::getI() const { return I_;}
 
@@ -37,31 +39,28 @@ void Neuron::setV (const double& V) { V_= V; }
 //Methods
 //======================================================================
 
-bool Neuron::update(double I) {
-	
-	//qd on aura plsr neurones, là où on devra itérer sur le I
-	
-	bool spike(false);
+bool Neuron::update() {
 
 	if (isRefractory_ > 0){
-		V_= 0;
-			isRefractory_ -=1;
+		V_= 10;
+		isRefractory_ -=1;
+		spike_ = false;
 	} else {
-		V_ = (V_ + (exp(-h_/tau_)*V_ + I*R_*(1-exp(-h_/tau_)) ));
+		V_ = (V_ + (exp(-h_/tau_)*V_ + I_*R_*(1-exp(-h_/tau_)) ));
 	}
 			
 	if (V_ > threshold_ ) {
 		nb_spikes_+=1;
 		isRefractory_ = tauRef_/h_;
-		spike = true;
+		spike_ = true;
 	}
 		
-	time_ += h_;
-	return spike;
+	time_ += 1;
+	return spike_;
 }
 
 void Neuron::Interact(Neuron &other) {
-	if (update(I_)) {
+	if (other.spike_ == true) {
 		other.V_ += J_;
 	}
 }
