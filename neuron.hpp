@@ -18,6 +18,8 @@ private:
 	double tauRef_;
 	double h_;
 	double R_;
+	double J_;
+	double I_;
 	
 public:
 	
@@ -28,12 +30,15 @@ public:
 	double getV() const;
 	double getNb_spikes() const;
 	double getTime_() const;
+	//double getI() const;
 	
 	//setter
 	void setV (const double& V);
+	//void setI (const double& I);
 	
 	//methods
-	void update(double I);
+	bool update(double I);
+	void Interact(Neuron &other);
 };
 
 
