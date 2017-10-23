@@ -50,6 +50,7 @@ bool Neuron::update() {
 		V_= 0;
 		isRefractory_ -=1;
 		spike_ = false;
+		//to do :clear the buffer at the times where the neuron is refractory (copy the fct getValue buffer without a return)
 	} else {
 		V_ =  (exp(-h_/tau_)*V_ + I_*R_*(1-exp(-h_/tau_)) + getValueBuffer()); ///ici on va ajouter le nombre de J qu'il y a dans le buffer du neuron au temps actuel
 	}
@@ -57,6 +58,7 @@ bool Neuron::update() {
 	if (V_ > threshold_ ) {
 		nb_spikes_+=1;
 		isRefractory_ = tauRef_/h_;
+		V_=0;
 		spike_ = true;
 	}
 		
