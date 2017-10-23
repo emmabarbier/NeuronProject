@@ -9,10 +9,11 @@ using namespace std;
 //======================================================================
 
 //default constructor
-Neuron::Neuron(int time, double I, int D, int n)
-	:  V_(0), nb_spikes_(0), time_(time), threshold_(20), isRefractory_(0), tau_(20.), tauRef_(2), h_(0.1), R_(20), J_(0.1), I_(I), spike_(false), buffer_(16	, 0), D_(D/0.1), n_(n)  {}
-
-
+Neuron::Neuron(int time, double I, double D)
+	:  V_(0), nb_spikes_(0), time_(time), threshold_(20), isRefractory_(0), tau_(20.), tauRef_(2), h_(0.1), R_(20), J_(0.1), I_(I), spike_(false), buffer_(16, 0), D_(D/0.1)  {}
+	//:  V_(0), nb_spikes_(0), time_(time), threshold_(20), isRefractory_(0), tau_(20.), tauRef_(2), h_(0.1), R_(20), J_(0.1), I_(I), spike_(false), buffer_(((D/h_) +1)	, 0), D_(D/0.1)  {}
+	
+//D/h +1
 //======================================================================
 //getters
 //======================================================================
@@ -71,14 +72,12 @@ void Neuron::Interact(Neuron &other) {
 
 ///on ajoute un J au buffer avec un delais du temps actuel + delais
 void Neuron::addJ(double J, int D) {
-	buffer_[(D)%buffer_.size()] += J;
-	cout << "(D)%buffer_.size() = " << ((D)%buffer_.size()) << endl;
+	buffer_[(D)%(buffer_.size())] += J;
 }
 
 double Neuron::getValueBuffer() {
 	int bufferTime ((time_+1)% buffer_.size()); ///ici on accede a la cellule du buffer qui nous interesse a partir du temps du neuron
 	double J(buffer_[bufferTime]);
-	cout << "neuron " << n_ << " recois un spike au temps :" << (time_+1)*0.1 << ". cellule du buffer ou J ajouté : " << bufferTime << ": Ajout d'une valeur de  " << buffer_[bufferTime]  << endl;
 	buffer_[bufferTime] =0; ///on reinitialise la cellule du buffer qu'on vient de lire a 0
 	return J;
 }

@@ -23,12 +23,11 @@ private:
 	bool spike_;
 	vector <double> buffer_;
 	int D_; ///delay in ms --> is converted in steps in teh constructor
-	int n_;
 	
 public:
 	
 	//constructors
-	Neuron(int time, double I, int D, int n); //default constructor
+	Neuron(int time, double I, double D); //default constructor
 	
 	//getters
 	double getV() const;
